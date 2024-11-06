@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Type Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            text-align: center;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diabetes Type Classification</h1>
+
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" required>
+        </div>
+
+        <div class="form-group">
+            <label for="glucose">Blood Sugar Level</label>
+            <input type="number" id="glucose" required>
+        </div>
+
+        <div class="form-group">
+            <label for="insulin">Insulin Level</label>
+            <input type="number" id="insulin" required>
+        </div>
+
+        <div class="form-group">
+            <label for="bmi">BMI</label>
+            <input type="number" id="bmi" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+            <label for="model">Select Model</label>
+            <select id="model">
+                <option value="naive_bayes">Naive Bayes</option>
+                <option value="perceptron">Perceptron</option>
+            </select>
+        </div>
+
+        <button onclick="makePrediction()">Submit</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function makePrediction() {
+            const data = {
+                age: parseFloat(document.getElementById("age").value),
+                glucose: parseFloat(document.getElementById("glucose").value),
+                insulin: parseFloat(document.getElementById("insulin").value),
+                bmi: parseFloat(document.getElementById("bmi").value),
+                model: document.getElementById("model").value
+            };
+
+            // Validate inputs
+            if (isNaN(data.age) || isNaN(data.glucose) || isNaN(data.insulin) || isNaN(data.bmi)) {
+                document.getElementById("result").innerHTML = "Please fill in all fields with valid numbers";
+                document.getElementById("result").className = "error";
+                return;
+            }
+
+            fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                const prediction = result.prediction === 1 ? "Diabetic" : "Non-diabetic";
+                document.getElementById("result").innerHTML = `Prediction: ${prediction}`;
+                document.getElementById("result").className = "success";
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("result").innerHTML = "An error occurred. Please try again.";
+                document.getElementById("result").className = "error";
+            });
+        }
+    </script>
+</body>
+</html>
