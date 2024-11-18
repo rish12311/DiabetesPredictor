@@ -5,11 +5,12 @@ Features
 Dual Model Prediction: Utilizes both Naive Bayes and Perceptron algorithms for comparative analysis
 Real-time Assessment: Instant prediction results through REST API
 User-friendly Interface: Clean and intuitive frontend for easy parameter input
-Medical Parameter Analysis: Processes key health indicators including:
+Medical Parameter Analysis: 
 
-Glucose Level
-Insulin
-Body Mass Index (BMI)
+Processes key health indicators including:
+Glucose Level,
+Insulin,
+Body Mass Index (BMI) &
 Age
 
 
